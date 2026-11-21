@@ -1,0 +1,390 @@
+erDiagram
+    %% =========================================================================
+    %% PortfolioPro - Entity Relationship Diagram (Mermaid 3NF Relational Model)
+    %% Covering All 10 Modules: P15-E01 through P15-E12
+    %% =========================================================================
+
+    USERS {
+        uuid id PK
+        string username UK
+        string email UK
+        string password_hash
+        string role
+        string first_name
+        string last_name
+        string phone_number
+        boolean is_active
+        boolean is_staff
+        boolean is_superuser
+        timestamptz date_joined
+        timestamptz last_login
+        timestamptz updated_at
+    }
+
+    USER_PROFILES {
+        uuid id PK
+        uuid user_id FK,UK
+        string avatar_url
+        string bio
+        string city
+        string state
+        string country
+        string pincode
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    TRADING_ACCOUNTS {
+        uuid id PK
+        uuid user_id FK,UK
+        string account_number UK
+        string currency
+        numeric cash_balance
+        numeric margin_used
+        string account_status
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    ACCOUNT_TRANSACTIONS {
+        uuid id PK
+        uuid account_id FK
+        string transaction_type
+        numeric amount
+        numeric balance_after
+        string reference_note
+        string status
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    KYC_RECORDS {
+        uuid id PK
+        uuid user_id FK,UK
+        string pan_number
+        string aadhaar_masked
+        string bank_account_number
+        string bank_ifsc
+        string verification_status
+        uuid verified_by FK
+        timestamptz verified_at
+        string rejection_reason
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    SECURITIES {
+        uuid id PK
+        string symbol UK
+        string company_name
+        string exchange
+        string sector
+        string industry
+        int lot_size
+        string isin_code UK
+        boolean is_active
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    MARKET_QUOTES {
+        uuid id PK
+        uuid security_id FK,UK
+        numeric ltp
+        numeric open_price
+        numeric high_price
+        numeric low_price
+        numeric close_price
+        bigint volume
+        numeric change_amount
+        numeric change_percent
+        numeric week_52_high
+        numeric week_52_low
+        timestamptz updated_at
+    }
+
+    HISTORICAL_PRICES {
+        uuid id PK
+        uuid security_id FK
+        date trade_date
+        numeric open
+        numeric high
+        numeric low
+        numeric close
+        bigint volume
+        timestamptz created_at
+    }
+
+    WATCHLISTS {
+        uuid id PK
+        uuid user_id FK
+        string name
+        boolean is_default
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    WATCHLIST_ITEMS {
+        uuid id PK
+        uuid watchlist_id FK
+        uuid security_id FK
+        int display_order
+        timestamptz created_at
+    }
+
+    TRADE_ORDERS {
+        uuid id PK
+        uuid user_id FK
+        uuid account_id FK
+        uuid security_id FK
+        string order_type
+        string transaction_type
+        int quantity
+        int filled_quantity
+        numeric limit_price
+        numeric executed_price
+        string order_status
+        string rejection_reason
+        timestamptz created_at
+        timestamptz executed_at
+        timestamptz cancelled_at
+        timestamptz updated_at
+    }
+
+    TRADE_EXECUTIONS {
+        uuid id PK
+        uuid order_id FK
+        uuid security_id FK
+        uuid user_id FK
+        int quantity
+        numeric execution_price
+        numeric brokerage_fee
+        numeric net_amount
+        timestamptz executed_at
+    }
+
+    PORTFOLIOS {
+        uuid id PK
+        uuid user_id FK
+        string name
+        boolean is_default
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    PORTFOLIO_HOLDINGS {
+        uuid id PK
+        uuid portfolio_id FK
+        uuid security_id FK
+        int quantity
+        numeric average_buy_price
+        numeric total_invested
+        numeric realized_pnl
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    PORTFOLIO_SNAPSHOTS {
+        uuid id PK
+        uuid portfolio_id FK
+        date snapshot_date
+        numeric total_equity_value
+        numeric total_cash_value
+        numeric total_portfolio_value
+        numeric day_pnl
+        numeric day_pnl_percent
+        timestamptz created_at
+    }
+
+    RISK_ASSESSMENTS {
+        uuid id PK
+        uuid portfolio_id FK
+        numeric portfolio_beta
+        numeric sharpe_ratio
+        numeric var_95_daily
+        numeric concentration_index
+        int risk_score
+        string risk_category
+        timestamptz calculated_at
+        timestamptz updated_at
+    }
+
+    RISK_THRESHOLDS {
+        uuid id PK
+        uuid user_id FK
+        numeric max_drawdown_limit
+        numeric max_single_stock_pct
+        boolean is_active
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    TECHNICAL_INDICATORS {
+        uuid id PK
+        uuid security_id FK
+        date calculation_date
+        numeric rsi_14
+        numeric macd_line
+        numeric macd_signal
+        numeric macd_hist
+        numeric sma_20
+        numeric sma_50
+        numeric sma_200
+        numeric ema_20
+        string overall_signal
+        timestamptz updated_at
+    }
+
+    USER_CHART_PREFERENCES {
+        uuid id PK
+        uuid user_id FK
+        string chart_type
+        string timeframe
+        jsonb default_indicators
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    FUNDAMENTAL_METRICS {
+        uuid id PK
+        uuid security_id FK,UK
+        numeric market_cap
+        numeric pe_ratio
+        numeric pb_ratio
+        numeric eps
+        numeric dividend_yield
+        numeric debt_to_equity
+        numeric roe
+        numeric book_value
+        int health_score
+        string financial_year
+        timestamptz updated_at
+    }
+
+    COMPANY_FINANCIALS {
+        uuid id PK
+        uuid security_id FK
+        string period_name
+        numeric revenue
+        numeric net_profit
+        numeric operating_margin
+        numeric ebitda
+        timestamptz created_at
+    }
+
+    PRICE_ALERTS {
+        uuid id PK
+        uuid user_id FK
+        uuid security_id FK
+        string condition
+        numeric target_value
+        boolean is_triggered
+        timestamptz triggered_at
+        boolean is_active
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    USER_NOTIFICATIONS {
+        uuid id PK
+        uuid user_id FK
+        string title
+        string message
+        string category
+        boolean is_read
+        string link_url
+        timestamptz created_at
+    }
+
+    SYSTEM_ANNOUNCEMENTS {
+        uuid id PK
+        uuid created_by FK
+        string title
+        string body
+        string priority
+        timestamptz valid_until
+        timestamptz created_at
+    }
+
+    SUPPORT_TICKETS {
+        uuid id PK
+        string ticket_number UK
+        uuid user_id FK
+        string category
+        string priority
+        string status
+        string subject
+        uuid related_order_id FK
+        uuid assigned_to FK
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz resolved_at
+    }
+
+    SUPPORT_MESSAGES {
+        uuid id PK
+        uuid ticket_id FK
+        uuid sender_id FK
+        string message_text
+        boolean is_internal_note
+        timestamptz created_at
+    }
+
+    %% =========================================================================
+    %% Entity Relationships
+    %% =========================================================================
+
+    %% Module 01: Authentication & Profiles
+    USERS ||--|| USER_PROFILES : "has profile"
+
+    %% Module 02: Account Management & KYC
+    USERS ||--|| TRADING_ACCOUNTS : "owns"
+    TRADING_ACCOUNTS ||--o{ ACCOUNT_TRANSACTIONS : "logs"
+    USERS ||--|| KYC_RECORDS : "submits"
+    USERS ||--o{ KYC_RECORDS : "verifies"
+
+    %% Module 03: Market Data & Watchlists
+    SECURITIES ||--|| MARKET_QUOTES : "has quote"
+    SECURITIES ||--o{ HISTORICAL_PRICES : "has historical bars"
+    USERS ||--o{ WATCHLISTS : "creates"
+    WATCHLISTS ||--o{ WATCHLIST_ITEMS : "contains"
+    SECURITIES ||--o{ WATCHLIST_ITEMS : "referenced by"
+
+    %% Module 04: Trading Engine
+    USERS ||--o{ TRADE_ORDERS : "places"
+    TRADING_ACCOUNTS ||--o{ TRADE_ORDERS : "funds"
+    SECURITIES ||--o{ TRADE_ORDERS : "targets"
+    TRADE_ORDERS ||--o{ TRADE_EXECUTIONS : "executes into"
+    SECURITIES ||--o{ TRADE_EXECUTIONS : "traded in"
+    USERS ||--o{ TRADE_EXECUTIONS : "executed for"
+
+    %% Module 05: Portfolio Management
+    USERS ||--o{ PORTFOLIOS : "owns"
+    PORTFOLIOS ||--o{ PORTFOLIO_HOLDINGS : "contains"
+    SECURITIES ||--o{ PORTFOLIO_HOLDINGS : "held in"
+    PORTFOLIOS ||--o{ PORTFOLIO_SNAPSHOTS : "snapshots"
+
+    %% Module 06: Risk Management
+    PORTFOLIOS ||--o{ RISK_ASSESSMENTS : "evaluated by"
+    USERS ||--o{ RISK_THRESHOLDS : "configures"
+
+    %% Module 07: Technical Analysis
+    SECURITIES ||--o{ TECHNICAL_INDICATORS : "has indicators"
+    USERS ||--o{ USER_CHART_PREFERENCES : "customizes"
+
+    %% Module 08: Fundamental Analysis
+    SECURITIES ||--|| FUNDAMENTAL_METRICS : "has fundamentals"
+    SECURITIES ||--o{ COMPANY_FINANCIALS : "publishes statements"
+
+    %% Module 09: Notifications & Alerts
+    USERS ||--o{ PRICE_ALERTS : "configures"
+    SECURITIES ||--o{ PRICE_ALERTS : "triggers on"
+    USERS ||--o{ USER_NOTIFICATIONS : "receives"
+    USERS ||--o{ SYSTEM_ANNOUNCEMENTS : "broadcasts"
+
+    %% Module 10: Customer Support Helpdesk
+    USERS ||--o{ SUPPORT_TICKETS : "opens"
+    USERS ||--o{ SUPPORT_TICKETS : "assigned to"
+    TRADE_ORDERS ||--o{ SUPPORT_TICKETS : "disputed in"
+    SUPPORT_TICKETS ||--o{ SUPPORT_MESSAGES : "threaded in"
+    USERS ||--o{ SUPPORT_MESSAGES : "authors"
